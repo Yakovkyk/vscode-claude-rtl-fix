@@ -24,10 +24,10 @@
             '.chat-markdown-part.rendered-markdown',
             '.chat-markdown-part',
             '.rendered-markdown',
-            // Claude Code 2.1.27+ (minified class names from Ln CSS module)
-            '.U.N',   // Ln.message + Ln.userMessageContainer (user message wrapper)
-            '.U.e',   // Ln.message + Ln.timelineMessage (assistant message wrapper)
-            '.ai',    // Ln.userMessage (user message text content)
+            // Claude Code 2.1.30+ (CSS Modules with hashed class names from k2 module)
+            '.message_07S1Yg.userMessageContainer_07S1Yg',   // k2.message + k2.userMessageContainer (user message wrapper)
+            '.message_07S1Yg.timelineMessage_07S1Yg',        // k2.message + k2.timelineMessage (assistant message wrapper)
+            '.userMessage_07S1Yg',                            // k2.userMessage (user message text content)
             // Antigravity (Google)
             '.whitespace-pre-wrap', // User messages
             'div.prose.prose-sm'    // Agent messages
@@ -42,21 +42,21 @@
         ],
 
         // Selectors for dialog elements (AskUserQuestion, Permission requests)
-        // Claude Code 2.1.29+ (minified class names from An/ai CSS modules)
+        // Claude Code 2.1.30+ (CSS Modules with hashed class names from u2/q5 modules)
         dialogSelectors: {
-            // AskUserQuestion dialog (An CSS module)
-            questionsContainer: '.an',    // An.questionsContainer
-            questionText: '.sn',          // An.questionTextLarge
-            optionRow: '.eo',             // An.option
-            optionLabel: '.kn',           // An.optionLabel
-            optionDescription: '.yn',     // An.optionDescription
-            navBar: '.en',                // An.navigationBar
-            navTab: '.Ko',                // An.navTab
-            otherInput: '.ro',            // An.otherInput
-            // Permission dialog (ai CSS module)
-            permissionContainer: '.t',    // ai.permissionRequestContainer
-            permissionHeader: '.Co',      // ai.permissionRequestHeader
-            permissionDescription: '.a',  // ai.permissionRequestDescription
+            // AskUserQuestion dialog (u2 CSS module)
+            questionsContainer: '.questionsContainer_hONcXw',    // u2.questionsContainer
+            questionText: '.questionTextLarge_hONcXw',           // u2.questionTextLarge
+            optionRow: '.option_hONcXw',                         // u2.option
+            optionLabel: '.optionLabel_hONcXw',                  // u2.optionLabel
+            optionDescription: '.optionDescription_hONcXw',      // u2.optionDescription
+            navBar: '.navigationBar_hONcXw',                     // u2.navigationBar
+            navTab: '.navTab_hONcXw',                            // u2.navTab
+            otherInput: '.otherInput_hONcXw',                    // u2.otherInput
+            // Permission dialog (q5 CSS module)
+            permissionContainer: '.permissionRequestContainer_qlaBag',    // q5.permissionRequestContainer
+            permissionHeader: '.permissionRequestHeader_qlaBag',          // q5.permissionRequestHeader
+            permissionDescription: '.permissionRequestDescription_qlaBag', // q5.permissionRequestDescription
         },
 
         // How often to check for new content (ms)

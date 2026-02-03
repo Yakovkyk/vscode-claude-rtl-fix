@@ -1,8 +1,14 @@
 # RTL for Claude Code - Installation Script
 # Run: powershell -ExecutionPolicy Bypass -File install.ps1
+# Use -Force to reinstall (restore from backup first, then inject fresh)
+
+param(
+    [switch]$Force
+)
 
 Write-Host "RTL for Claude Code - Installer" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
+if ($Force) { Write-Host "(Force mode - will reinstall even if already present)" -ForegroundColor Yellow }
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -34,13 +40,20 @@ foreach ($ext in $ClaudeExts) {
         # Check if already installed
         $Content = Get-Content $IndexJs -Raw
         if ($Content -match "RTL Support for Claude Code") {
-            Write-Host "  RTL already installed, skipping" -ForegroundColor Yellow
-        } else {
-            # Inject RTL script
-            $RtlScript = Get-Content (Join-Path $ScriptDir "rtl-claude-code.js") -Raw
-            Add-Content -Path $IndexJs -Value "`n$RtlScript"
-            Write-Host "  RTL script injected!" -ForegroundColor Green
+            if ($Force) {
+                # Restore from backup and re-inject
+                Write-Host "  RTL found, restoring from backup for fresh install..." -ForegroundColor Yellow
+                Copy-Item $BackupPath $IndexJs -Force
+            } else {
+                Write-Host "  RTL already installed, skipping (use -Force to reinstall)" -ForegroundColor Yellow
+                continue
+            }
         }
+
+        # Inject RTL script
+        $RtlScript = Get-Content (Join-Path $ScriptDir "rtl-claude-code.js") -Raw
+        Add-Content -Path $IndexJs -Value "`n$RtlScript"
+        Write-Host "  RTL script injected!" -ForegroundColor Green
     }
 }
 

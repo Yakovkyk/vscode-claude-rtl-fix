@@ -41,23 +41,31 @@ This check must be done every time, even if RTL is already installed.
 
 #### How to scan current class names:
 
+**Important:** Claude Code's CSS module/variable names (like `Ln`, `k2`, `An`, `u2`) change between versions.
+Always search by **property names** (like `messagesContainer`, `questionsContainer`) which stay consistent.
+The class name values may be either minified (`"U"`, `"e"`) or CSS Module hashed (`"message_07S1Yg"`).
+
 1. Read the backup file (original version without injection):
    `webview/index.js.backup` (if exists) or `webview/index.js` (if RTL not installed)
 
-2. Search for the Ln CSS module definition (chat messages module):
+2. Search for the **chat messages CSS module** by property name:
    ```
-   grep -oP 'Ln\s*=\s*\{[^}]{0,500}' <path-to-backup>
+   grep -oP '\w+\s*=\s*\{[^}]*messagesContainer[^}]{0,500}' <path-to-backup>
    ```
-   This will return something like:
+   This will return something like (minified):
    ```
    Ln={chatContainer:"ri",messagesContainer:"P",message:"U",userMessageContainer:"N",userMessage:"ai",timelineMessage:"e",...}
    ```
+   Or (CSS Modules, newer versions):
+   ```
+   k2={chatContainer:"chatContainer_07S1Yg",messagesContainer:"messagesContainer_07S1Yg",message:"message_07S1Yg",userMessageContainer:"userMessageContainer_07S1Yg",userMessage:"userMessage_07S1Yg",timelineMessage:"timelineMessage_07S1Yg",...}
+   ```
 
 3. Extract the relevant class names:
-   - `message` - single message class (e.g. `"U"`)
-   - `userMessageContainer` - user message container class (e.g. `"N"`)
-   - `timelineMessage` - assistant message class (e.g. `"e"`)
-   - `userMessage` - user message text class (e.g. `"ai"`)
+   - `message` - single message class
+   - `userMessageContainer` - user message container class
+   - `timelineMessage` - assistant message class
+   - `userMessage` - user message text class
 
 4. Also search for dialog CSS modules:
 
@@ -65,41 +73,37 @@ This check must be done every time, even if RTL is already installed.
    ```
    grep -oP '\w+\s*=\s*\{[^}]*questionsContainer[^}]{0,500}' <path-to-backup>
    ```
-   This will return something like:
-   ```
-   An={questionsContainer:"an",questionBlock:"pn",questionTextLarge:"sn",option:"eo",optionLabel:"kn",optionDescription:"yn",navigationBar:"en",navTab:"Ko",otherInput:"ro",...}
-   ```
    Extract:
-   - `questionsContainer` (e.g. `"an"`)
-   - `questionTextLarge` (e.g. `"sn"`)
-   - `option` (e.g. `"eo"`)
-   - `optionLabel` (e.g. `"kn"`)
-   - `optionDescription` (e.g. `"yn"`)
-   - `navigationBar` (e.g. `"en"`)
-   - `navTab` (e.g. `"Ko"`)
-   - `otherInput` (e.g. `"ro"`)
+   - `questionsContainer`
+   - `questionTextLarge`
+   - `option`
+   - `optionLabel`
+   - `optionDescription`
+   - `navigationBar`
+   - `navTab`
+   - `otherInput`
 
    **Permission module** (action approval dialogs):
    ```
    grep -oP '\w+\s*=\s*\{[^}]*permissionRequestContainer[^}]{0,500}' <path-to-backup>
    ```
    Extract:
-   - `permissionRequestContainer` (e.g. `"t"`)
-   - `permissionRequestHeader` (e.g. `"Co"`)
-   - `permissionRequestDescription` (e.g. `"a"`)
+   - `permissionRequestContainer`
+   - `permissionRequestHeader`
+   - `permissionRequestDescription`
 
 5. Compare with selectors in `rtl-claude-code.js`:
-   - Check the `chatSelectors` block - verify it matches Ln class names
-   - Check the `dialogSelectors` block - verify it matches An and ai class names
+   - Check the `chatSelectors` block - verify it matches the chat module class names
+   - Check the `dialogSelectors` block - verify it matches the question and permission module class names
    - **Both must be checked!**
 
 6. **If selectors don't match** - update `rtl-claude-code.js`:
    - Update `chatSelectors` with new class names
    - Update `dialogSelectors` with new class names
    - chatSelectors format: `.{message}.{userMessageContainer}` for user messages, `.{message}.{timelineMessage}` for assistant messages, `.{userMessage}` for text
-   - Update comments to note the version
+   - Update comments to note the version and module variable name
 
-#### Example - chatSelectors:
+#### Example - chatSelectors (minified):
 If you found `Ln={...,message:"Q",userMessageContainer:"Z",timelineMessage:"f",userMessage:"bx",...}`:
 ```javascript
 chatSelectors: [
@@ -107,6 +111,18 @@ chatSelectors: [
     '.Q.Z',   // Ln.message + Ln.userMessageContainer
     '.Q.f',   // Ln.message + Ln.timelineMessage
     '.bx',    // Ln.userMessage
+    ...
+]
+```
+
+#### Example - chatSelectors (CSS Modules / hashed):
+If you found `k2={...,message:"message_07S1Yg",userMessageContainer:"userMessageContainer_07S1Yg",timelineMessage:"timelineMessage_07S1Yg",userMessage:"userMessage_07S1Yg",...}`:
+```javascript
+chatSelectors: [
+    ...
+    '.message_07S1Yg.userMessageContainer_07S1Yg',   // k2.message + k2.userMessageContainer
+    '.message_07S1Yg.timelineMessage_07S1Yg',        // k2.message + k2.timelineMessage
+    '.userMessage_07S1Yg',                            // k2.userMessage
     ...
 ]
 ```
